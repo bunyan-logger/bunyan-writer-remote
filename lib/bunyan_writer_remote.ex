@@ -1,7 +1,5 @@
 defmodule Bunyan.Writer.Remote do
 
-  alias Bunyan.Writer.Remote.Server
-
   use Bunyan.Shared.Writable
 
 

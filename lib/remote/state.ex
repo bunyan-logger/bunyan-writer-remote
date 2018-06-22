@@ -1,6 +1,7 @@
-defmodule Bunyan.Writers.Remote.State do
+defmodule Bunyan.Writer.Remote.State do
 
   defstruct(
+    name:                nil,
     target_process_name: nil,
     target_process_pid:  nil,
     min_log_level:       Bunyan.Shared.Level.of(:warn),

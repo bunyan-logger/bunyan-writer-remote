@@ -1,27 +1,32 @@
-defmodule Bunyan.Writers.Remote.Server do
+defmodule Bunyan.Writer.Remote.Server do
 
   use GenServer
 
-  alias Bunyan.Writers.Remote.{ Impl, State }
-
-  @me __MODULE__
+  alias Bunyan.Writer.Remote.{ Impl, State }
 
   def start_link(args) do
-    GenServer.start_link(__MODULE__, Impl.parse_options(args), name: @me)
+    config = Impl.parse_options(args)
+    GenServer.start_link(__MODULE__, config, name: config.name)
   end
 
-  def init(args) do
-    raise inspect here: args
-    state = %State{} |> reset_timer()
+  def init(config) do
+    state = config |> reset_timer()
+    IO.inspect init: state
+    IO.inspect init: self()
     { :ok, state }
   end
 
 
-  def handle_cast({ :send, msg }, state) do
+  def handle_cast({ :log_message, msg }, state) do
+    IO.inspect log_msg: msg
     state = maybe_send(msg, state)
     { :noreply, state }
   end
 
+  def handle_cast(anything, state) do
+    IO.inspect anything: anything
+    { :noreply, state }
+  end
 
   defp maybe_send(msg, state = %{ pending: pending }) do
     state = %{ state | pending: [ msg | pending ]}
@@ -35,7 +40,11 @@ defmodule Bunyan.Writers.Remote.Server do
   end
 
   defp send_and_reset(state) do
-    GenServer.call(state.target_process, { :forward_log, Enum.reverse(state.pending) })
+    GenServer.cast(
+      state.target_process_pid,
+      { :forward_log, Enum.reverse(state.pending) }
+    )
+
     state
     |> reset_timer()
     |> Map.put(:pending, [])
@@ -48,6 +57,7 @@ defmodule Bunyan.Writers.Remote.Server do
   end
 
   def handle_info({ :flush }, state) do
+    IO.inspect flush: state
     state = state |> send_and_reset()
     { :noreply, state }
   end

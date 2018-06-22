@@ -1,10 +1,11 @@
-defmodule Bunyan.Writers.Remote.Impl do
+defmodule Bunyan.Writer.Remote.Impl do
 
-  alias Bunyan.Writers.Remote.State
+  alias Bunyan.Writer.Remote.State
 
   @valid_options [
     :send_to,        # name of the remote logger process
-    :min_log_level,  # only send >= this
+    :min_log_level,  # only send >= this,
+    :name,           # name of this writer
   ]
 
   def parse_options(options) do
@@ -12,6 +13,7 @@ defmodule Bunyan.Writers.Remote.Impl do
     %State{}
     |> extract_send_to(options[:send_to])
     |> extract_min_log_level(options[:min_log_level])
+    |> extract_name(options[:name])
   end
 
 
@@ -22,7 +24,7 @@ defmodule Bunyan.Writers.Remote.Impl do
 
     Invalid option(s) passed to Bunyan.Writers.Remote: #{Enum.join(unknown, ", ")}
 
-    Valid options are: #{Enum.join(@valid_options, ".")}
+    Valid options are: #{Enum.join(@valid_options, ", ")}
 
     """
   end
@@ -32,7 +34,7 @@ defmodule Bunyan.Writers.Remote.Impl do
   defp extract_send_to(_result, nil) do
     raise """
 
-    The `sent_to:` option is required when you use a Bunyan.Writers.Remote
+    The `send_to:` option is required when you use a Bunyan.Writers.Remote
 
     """
   end
@@ -46,6 +48,9 @@ defmodule Bunyan.Writers.Remote.Impl do
     end
   end
 
+
+  defp extract_name(result, nil), do: extract_name(result, __MODULE__)
+  defp extract_name(result, name), do: %{ result | name: name }
 
   ####
 
