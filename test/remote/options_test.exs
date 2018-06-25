@@ -2,7 +2,7 @@ defmodule TestRemoteOptions do
 
   use ExUnit.Case
   alias Bunyan.Writer.Remote.{ Impl }
-  alias Bunyan.Shared.Level
+  alias Bunyan.Shared.{ Level, TestHelpers.DummyLogger }
 
 
 

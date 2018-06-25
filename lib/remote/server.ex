@@ -11,14 +11,11 @@ defmodule Bunyan.Writer.Remote.Server do
 
   def init(config) do
     state = config |> reset_timer()
-    IO.inspect init: state
-    IO.inspect init: self()
     { :ok, state }
   end
 
 
   def handle_cast({ :log_message, msg }, state) do
-    IO.inspect log_msg: msg
     state = maybe_send(msg, state)
     { :noreply, state }
   end
@@ -57,7 +54,6 @@ defmodule Bunyan.Writer.Remote.Server do
   end
 
   def handle_info({ :flush }, state) do
-    IO.inspect flush: state
     state = state |> send_and_reset()
     { :noreply, state }
   end

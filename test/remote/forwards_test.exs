@@ -2,6 +2,8 @@ defmodule TestRemote.Forward do
 
   use ExUnit.Case
   alias Bunyan.Writer.Remote.{ Server }
+  alias Bunyan.Shared.TestHelpers
+  alias TestHelpers.DummyLogger
 
   import TestHelpers
 
