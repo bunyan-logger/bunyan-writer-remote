@@ -24,39 +24,6 @@ defmodule TestHelpers do
   end
 end
 
-  defmodule DummyLogger do
-    @me __MODULE__
 
-    use GenServer
-    def start_link() do
-      GenServer.start_link(__MODULE__, nil, name: @me)
-    end
-
-    def stop() do
-      GenServer.stop(@me)
-    end
-
-    def get_messages() do
-      GenServer.call(@me, { :get_messages })
-    end
-
-    def init(_) do
-      { :ok, %{ msgs: [] } }
-    end
-
-    def handle_cast({ :forward_log, msg }, state) do
-      state = %{ state | msgs: [ msg | state.msgs ] }
-      IO.inspect dummy: msg
-      { :noreply, state }
-    end
-
-    def handle_call( { :get_messages }, _, state) do
-      { :reply, state.msgs, %{ state | msgs: [] }}
-    end
-
-    def handle_call(msg, _, _state) do
-      raise "handle_call(#{inspect msg})"
-    end
-  end
 
 ExUnit.start()

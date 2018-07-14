@@ -1,9 +1,11 @@
 defmodule Bunyan.Writer.Remote do
 
-  use Bunyan.Shared.Writable
+  @server __MODULE__.Server
+
+  use Bunyan.Shared.Writable, server_module: @server
 
 
-  def update_configuration(name, new_config) do
+  def update_configuration(name \\ @server, new_config) do
     GenServer.call(name, { :update_configuration, new_config })
   end
 
