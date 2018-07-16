@@ -37,8 +37,15 @@ defmodule Bunyan.Writer.Remote.Server do
   end
 
 
-  def handle_cast({ :log_message, msg }, state) do
+  # only log if the message is at or above the requested level
+  def handle_cast({ :log_message, msg  = %{ level: msg_level }}, state = %{ runtime_log_level: runtime_level })
+  when msg_level >= runtime_level
+  do
     state = maybe_send(msg, state)
+    { :noreply, state }
+  end
+
+  def handle_cast({ :log_message, _msg }, state) do
     { :noreply, state }
   end
 

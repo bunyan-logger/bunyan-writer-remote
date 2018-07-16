@@ -9,7 +9,7 @@ defmodule BunyanWriterRemote.MixProject do
   def project() do
     Build.project(
       :bunyan_writer_remote,
-      "0.1.0",
+      "0.5.0",
       &deps/1,
       "The component that lets a nde forward log messages to another node in the Bunyan distributed and pluggable logging system"
     )
